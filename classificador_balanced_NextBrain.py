@@ -2,7 +2,7 @@
 # Imports
 import os
 import pandas as pd
-import numpy as np 
+import numpy as np
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, RocCurveDisplay, PrecisionRecallDisplay
@@ -25,11 +25,17 @@ from sklearn.neural_network import MLPClassifier
 df1 = pd.read_csv('info_subjecte.csv', sep = ',')
 df2 = pd.read_csv('nextbrain_L_vols.csv', sep = ',')
 df3 = pd.read_csv('nextbrain_R_vols.csv', sep = ',')
+df4 = pd.read_csv('A4_synthseg_vols.csv', sep = ',')
 
 # No necessitarem aquestes columnes
 df1.drop(columns=['PTGENDER', 'PTRACE', 'APOE_E4_COUNT', 'PTEDUCAT'], inplace=True)
 df2.drop(columns = ['Unnamed: 0', 'session'], inplace = True)
 df3.drop(columns = ['Unnamed: 0', 'session'], inplace = True)
+df4 = df4[['subject', 'total intracranial', 'Unnamed: 0']] # Les úniques columnes que m'interessen d'aquest
+
+# Ens quedarem amb només una run de cada pacient per així evitar tenir pacients duplicats
+df4 = df4[df4['Unnamed: 0'] == 0]
+df4.drop(columns = ['Unnamed: 0'], inplace = True) # Ja no em fa falta
 
 # Ajuntarem els df del nextbrain en un de sol
 columnes = df2.columns.tolist()
@@ -44,6 +50,7 @@ for col in columnes:
 
 # Unir dataframes
 df_total = pd.merge(df1, dfNextbrain, left_on='BID', right_on='subject')
+df_total = pd.merge(df_total, df4, on='subject', how='inner')
 
 # Scikit-learn no accepta NaNs, també els eliminem
 df_total = df_total.dropna()
@@ -63,10 +70,20 @@ X = df_total.drop(columns = ['BID', 'subject'])
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # PRIMERA NORMALITZACIÓ DE LES DADES
+dividir_total = True # Per decidir si utilitzem la variable del volum intracranial per dividir
+
+if dividir_total:
+    # Comencem la normalització dividint pel volum intracranial
+    # Fem una llista amb les columnes que hem de normalitzar (excloem total intracranial, PTAGE i SCORE que no s'han de normalitzar)
+    cols_to_normalize = X.columns.drop(['total intracranial', 'PTAGE', 'SCORE'])
+
+    # Dividim les columnes per la referència (total intracranial)
+    X[cols_to_normalize] = X[cols_to_normalize].div(X['total intracranial'], axis=0)
+
 X_negativos = X[X['SCORE'] == 'negative']
 
 # El mateix d'abans, definim quines columnes s'han de normalitzar
-cols_to_correct = X.columns.drop(['PTAGE', 'SCORE'])
+cols_to_correct = X.columns.drop(['PTAGE', 'SCORE', 'total intracranial'])
 
 # Bucle per ajustar el model per cada columna
 for col in cols_to_correct:
@@ -91,7 +108,7 @@ for col in cols_to_correct:
 # ------------------------------------------------------------------------------------------------------------------------------------------
 # ÚLTIMS PASSOS PER A TENIR EL DATASET LLEST
 # La meva variable predictora ja neta
-X.drop(columns=['PTAGE', 'SCORE'], inplace=True)
+X.drop(columns=['PTAGE', 'SCORE', 'total intracranial'], inplace=True)
 
 # --- EL FIX PER L' ERROR DE 'c_contiguous' ---
 # Convertim X a un array de numpy pur i ens assegurem de que sigui C-contiguous
@@ -283,4 +300,3 @@ print(f"Amb el model l'estudi costaria: {Cp:.4f}")
 print(f"Hem estalviat un: {estalvi:.4f}")
 print("=" * 30)
 # ------------------------------------------------------------------------------------------------------------------------------------------
-

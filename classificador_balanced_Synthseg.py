@@ -38,6 +38,10 @@ df_total.drop(columns=['PTGENDER', 'PTRACE', 'APOE_E4_COUNT', 'PTEDUCAT', 'Unnam
 # Scikit-learn no accepta NaNs, també els eliminem
 df_total = df_total.dropna()
 
+# Hi ha dos ID que apareixen a Synthseg i no a NextBrain, per consistència entre experiments els eliminarem també
+ids_to_remove = {'B69162123', 'B11343379'}
+df_total = df_total[~df_total['subject'].isin(ids_to_remove)]
+
 # Mides del dataset "original"
 print(f'El dataset original és de {df_total.shape}')
 

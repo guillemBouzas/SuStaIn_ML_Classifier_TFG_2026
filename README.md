@@ -21,3 +21,11 @@ A continuació es descriu el contingut de cadascuna de les carpetes del reposito
   A l’interior de la carpeta s’hi troben tres subcarpetes diferenciades segons la procedència de les dades o l’atles utilitzat: **A4**, **ADNI** i **NextBrain**.
 
 Per identificar la base de dades utilitzada en cada script, cal tenir en compte que únicament els fitxers que contenen el prefix `adni` al nom fan ús de la base de dades ADNI. La resta de scripts treballen amb dades provinents de la base de dades A4.
+
+## ACLARACIONS
+
+Per a la redacció i desenvolupament del codi d’aquest treball s’han utilitzat eines d’intel·ligència artificial generativa, com ara ChatGPT i Google Gemini, com a suport durant el procés de programació.
+
+Tot i això, tot el codi present en aquest repositori ha estat revisat personalment i n’entenc el funcionament i la implementació. Així mateix, cal destacar que el disseny metodològic, el plantejament dels algorismes i les decisions experimentals han estat desenvolupats principalment per mi, o bé basats en documentació i tutorials oficials utilitzats com a referència, com és el cas del tutorial proporcionat per a la utilització de SuStaIn.
+
+Finalment, cal indicar que alguns comentaris en anglès presents dins dels scripts relacionats amb els models SuStaIn provenen directament d’aquests tutorials oficials i s’han mantingut amb l’objectiu de preservar la claredat i facilitar la comprensió del funcionament original del codi.

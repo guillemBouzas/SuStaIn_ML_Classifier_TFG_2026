@@ -268,7 +268,8 @@ for i, biomarker in enumerate(biomarkers):
 for j in range(i + 1, len(axes)):
     fig.delaxes(axes[j])
 
-plt.title('Distribucions abans de normalitzar')
+fig.suptitle('Distribucions abans de normalitzar', fontsize=16)
+plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.savefig('figures/biomarkers_distributions_before_normalization.svg', dpi=300)
 plt.close()  # Per netejar les figures
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -336,6 +337,7 @@ g.set_axis_labels("PTAGE", "Valor")
 # Títol general per a tota la figura
 plt.subplots_adjust(top=0.95) # Deixa un espai per al títol
 g.fig.suptitle('Relació entre PTAGE i Biomarcadors per SCORE (abans de normalitzar)', fontsize=16)
+g.tight_layout(rect=[0, 0, 1, 0.96])
 
 # 5. Guardar la imatge 
 plt.savefig('figures/all_biomarkers_vs_ptage_scatterplot_grid_before_normalization.svg', dpi=300, bbox_inches='tight')
@@ -365,6 +367,7 @@ g.set_axis_labels("PTAGE", "Valor")
 
 plt.subplots_adjust(top=0.95) 
 g.fig.suptitle('Relació entre PTAGE i Biomarcadors per SCORE (després de normalitzar)', fontsize=16)
+g.tight_layout(rect=[0, 0, 1, 0.96])
 
 plt.savefig('figures/all_biomarkers_vs_ptage_scatterplot_grid_after_normalization.svg', dpi=300, bbox_inches='tight')
 plt.close()
@@ -403,7 +406,8 @@ for i, biomarker in enumerate(biomarkers):
 for j in range(i + 1, len(axes)):
     fig.delaxes(axes[j])
 
-plt.title('Distribucions després de normalitzar')
+fig.suptitle('Distribucions després de normalitzar', fontsize=16)
+plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.savefig('figures/biomarkers_distributions_after_normalization.svg', dpi=300)
 plt.close()  
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

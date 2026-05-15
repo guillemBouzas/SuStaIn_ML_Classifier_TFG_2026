@@ -122,7 +122,8 @@ for i, biomarker in enumerate(biomarkers):
 for j in range(i + 1, len(axes)):
     fig.delaxes(axes[j])
 
-plt.title('Distribucions abans de normalitzar')
+fig.suptitle('Distribucions abans de normalitzar', fontsize=16)
+plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.savefig('figures/biomarkers_distributions_before_normalization.svg', dpi=300)
 plt.close()  # Per netejar les figures
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -187,6 +188,7 @@ g.set_axis_labels("age", "Valor")
 # Títol general per a tota la figura
 plt.subplots_adjust(top=0.95) # Deixa un espai per al títol
 g.fig.suptitle('Relació entre age i Biomarcadors per abeta_pos (abans de normalitzar)', fontsize=16)
+g.tight_layout(rect=[0, 0, 1, 0.96])
 
 # Guardar la imatge
 plt.savefig('figures/all_biomarkers_vs_age_scatterplot_grid_before_normalization.svg', dpi=300, bbox_inches='tight')
@@ -216,6 +218,7 @@ g.set_axis_labels("age", "Valor")
 
 plt.subplots_adjust(top=0.95) 
 g.fig.suptitle('Relació entre age i Biomarcadors per abeta_pos (després de normalitzar)', fontsize=16)
+g.tight_layout(rect=[0, 0, 1, 0.96])
 
 plt.savefig('figures/all_biomarkers_vs_age_scatterplot_grid_after_normalization.svg', dpi=300, bbox_inches='tight')
 plt.close()
@@ -246,7 +249,8 @@ for i, biomarker in enumerate(biomarkers):
 for j in range(i + 1, len(axes)):
     fig.delaxes(axes[j])
 
-plt.title('Distribucions després de normalitzar')
+fig.suptitle('Distribucions després de normalitzar', fontsize=16)
+plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.savefig('figures/biomarkers_distributions_after_normalization.svg', dpi=300)
 plt.close()  
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -261,13 +265,6 @@ plt.close()
 # Per a l'algorisme no ens cal diferenciar exactament que és enormement gran o petit, només que és un extrem, i això ja ho representa el rang
 zdata = np.clip(zdata, -5, 5)
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-# -- Ara voldrem aplicar el model només al subgrup que són positius
-zdata_train = zdata.query('abeta_pos == 0')
-zdata_test = zdata.query('abeta_pos == 1')
-# --
 
 
 
@@ -294,7 +291,7 @@ dataset_name = 'WorkshopOutput'
 
 # Initiate the SuStaIn object
 sustain_input = pySuStaIn.ZscoreSustain(
-                              zdata_test[biomarkers].values,
+                              zdata[biomarkers].values,
                               Z_vals,
                               Z_max,
                               SuStaInLabels,
@@ -372,7 +369,7 @@ plt.close()
 
 # Aquesta part l'haurem d'adaptar si volem fer l'anàlisi amb dos subtypes i no només amb 1, quan ho vulgui fer amb dos subtypes agafar codi del tutorial
 s = 2 # 1 split = 2 subtypes, 2 split = 3 subtypes
-M = len(zdata_test)
+M = len(zdata)
 
 # get the sample sequences and f
 pickle_filename_s = output_folder + '/pickle_files/' + dataset_name + '_subtype' + str(s) + '.pickle'
@@ -427,13 +424,13 @@ for variable in ['ml_subtype', # the assigned subtype
                  'prob_ml_stage',]: # the probability of the assigned stage
     
     # add SuStaIn output to dataframe
-    zdata_test.loc[:,variable] = pk[variable]
+    zdata.loc[:,variable] = pk[variable]
 
 # let's also add the probability for each subject of being each subtype
 for i in range(s):
-    zdata_test.loc[:,'prob_S%s'%i] = pk['prob_subtype'][:,i]
+    zdata.loc[:,'prob_S%s'%i] = pk['prob_subtype'][:,i]
 
-print(zdata_test.head())
+print(zdata.head())
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -443,12 +440,12 @@ print(zdata_test.head())
 # We'll set current subtype (0 and 1) to 1 and 0, and we'll call "Stage 0" individuals subtype 0.
 
 # make current subtypes (0 and 1) 1 and 2 instead
-zdata_test.loc[:,'ml_subtype'] = zdata_test.ml_subtype.values + 1
+zdata.loc[:,'ml_subtype'] = zdata.ml_subtype.values + 1
 
 # convert "Stage 0" subjects to subtype 0
-zdata_test.loc[zdata_test.ml_stage==0,'ml_subtype'] = 0
+zdata.loc[zdata.ml_stage==0,'ml_subtype'] = 0
 
-print(zdata_test.ml_subtype.value_counts())
+print(zdata.ml_subtype.value_counts())
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -456,7 +453,7 @@ print(zdata_test.ml_subtype.value_counts())
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Ens serveix per comprovar si els individus control han estat assignats al subtipus 0
 
-sns.displot(x='ml_stage',hue='abeta_pos',data=zdata_test,col='ml_subtype')
+sns.displot(x='ml_stage',hue='abeta_pos',data=zdata,col='ml_subtype')
 plt.savefig('figures/subtype_dist_hist.svg', dpi=300, bbox_inches='tight')
 plt.clf() 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -468,7 +465,7 @@ plt.clf()
 
 sns.pointplot(x='ml_stage',y='prob_ml_subtype', # input variables
               hue='ml_subtype',                 # "grouping" variable
-            data=zdata_test[zdata_test.ml_subtype>0]) # only plot for Subtypes 1 and 2 (not 0)
+            data=zdata[zdata.ml_subtype>0]) # only plot for Subtypes 1 and 2 (not 0)
 plt.ylim(0,1) 
 plt.axhline(0.5,ls='--',color='k') # plot a line representing change (0.5 in the case of 2 subtypes)
 plt.savefig('figures/certesa_subtype_stage.svg', dpi=300, bbox_inches='tight')
@@ -486,28 +483,28 @@ plt.clf()
 
 # Assegurem que zdata només tingui files que existeixen a data (després de la neteja)
 # Això sincronitza ambdós DataFrames per si de cas
-zdata_test = zdata_test[zdata_test.index.isin(data.index)]
+zdata = zdata[zdata.index.isin(data.index)]
 
 # Assignem l'edat real
 # Fem servir .loc per buscar exactament els mateixos IDs (índexs) que hi ha a zdata
 var_real = 'AGE_REAL'
-zdata_test[var_real] = data.loc[zdata_test.index, 'age']
+zdata[var_real] = data.loc[zdata.index, 'age']
 
 # El gràfic lmplot
 # Filtrem ml_subtype > 0 per evitar els "no assignats" si n'hi hagués
 g = sns.lmplot(x='ml_stage', y=var_real, hue='ml_subtype',
-               data=zdata_test[zdata_test.ml_subtype > 0],
+               data=zdata[zdata.ml_subtype > 0],
                height=6, aspect=1.2, scatter_kws={'alpha': 0.5})
 
 ax = g.ax
 
 # Càlcul dels estadístics per cada subtipus
 # Suposem que els teus subtipus estan guardats a zdata.ml_subtype.unique()
-subtypes = [s for s in zdata_test.ml_subtype.unique() if s > 0]
+subtypes = [s for s in zdata.ml_subtype.unique() if s > 0]
 
 for i, subtype in enumerate(subtypes):
     # Extraiem les dades filtrades per subtipus
-    subset = zdata_test[zdata_test.ml_subtype == subtype]
+    subset = zdata[zdata.ml_subtype == subtype]
 
     x_vals = subset['ml_stage'].values
     y_vals = subset[var_real].values
@@ -542,8 +539,8 @@ plt.close()
 from scipy import stats
 results = pandas.DataFrame(index=biomarkers)
 for biomarker in biomarkers:
-    t,p = stats.ttest_ind(zdata_test.loc[zdata_test.ml_subtype==0,biomarker],
-                         zdata_test.loc[zdata_test.ml_subtype==1,biomarker],)
+    t,p = stats.ttest_ind(zdata.loc[zdata.ml_subtype==0,biomarker],
+                         zdata.loc[zdata.ml_subtype==1,biomarker],)
     results.loc[biomarker,'t'] = t
     results.loc[biomarker,'p'] = p
     
@@ -575,10 +572,10 @@ fig, axes = plt.subplots(1, 5, figsize=(18, 6))
 
 for i, var in enumerate(vars_to_plot):
     # Verifiquem si la variable existeix per evitar errors
-    if var in zdata_test.columns:
-        sns.boxplot(x='ml_subtype', y=var, data=zdata_test, ax=axes[i], palette='Set2')
+    if var in zdata.columns:
+        sns.boxplot(x='ml_subtype', y=var, data=zdata, ax=axes[i], palette='Set2')
         # També podem afegir els punts individuals (stripplot) per veure la dispersió real
-        sns.stripplot(x='ml_subtype', y=var, data=zdata_test, ax=axes[i],
+        sns.stripplot(x='ml_subtype', y=var, data=zdata, ax=axes[i],
                       color='black', alpha=0.3, size=4)
 
         axes[i].set_title(f'Distribució de:\n{var.replace("_", " ").title()}', fontsize=14)
@@ -602,10 +599,10 @@ plt.close()
 # Aquí mirarem quants positius i negatius hi ha de cada subtype
 
 # Recorrem tots els subtipus
-for subtype in sorted(zdata_test['ml_subtype'].unique()):
+for subtype in sorted(zdata['ml_subtype'].unique()):
     # Filtrem el dataframe pel subtipus i en mirem l'abeta_pos
-    scores_subtipo = zdata_test.loc[zdata_test['ml_subtype'] == subtype, 'abeta_pos'].values
-    conteo = zdata_test.loc[zdata_test['ml_subtype'] == subtype, 'abeta_pos'].value_counts()
+    scores_subtipo = zdata.loc[zdata['ml_subtype'] == subtype, 'abeta_pos'].values
+    conteo = zdata.loc[zdata['ml_subtype'] == subtype, 'abeta_pos'].value_counts()
     
     print(f"\n--- Subtipus {subtype} ---")
     print(f"Quantitat de subjectes: {len(scores_subtipo)}")
@@ -616,5 +613,5 @@ for subtype in sorted(zdata_test['ml_subtype'].unique()):
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Ens guardarem zdata per fer una avaluació del resultat de diferents experiments
-zdata_test.to_csv('Experiment.csv', index=False, sep=',', encoding='utf-8')
+zdata.to_csv('Experiment.csv', index=False, sep=',', encoding='utf-8')
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -145,11 +145,11 @@ print("Iniciant validació creuada amb SMOTE (Balanceig 50/50)...")
 
 # Aquí preparem l'ensamble
 # Models
-clf1 = svm.SVC(kernel='rbf', probability=True, class_weight='balanced')  # Lo de probaility = True és pel voting soft
-clf2 = RandomForestClassifier(n_estimators=100, class_weight='balanced')
+clf1 = svm.SVC(kernel='rbf', probability=True, class_weight='balanced', random_state=42)  # Lo de probaility = True és pel voting soft
+clf2 = RandomForestClassifier(n_estimators=100, class_weight='balanced', random_state=42)
 clf3 = KNeighborsClassifier(n_neighbors=5, weights='distance')
 logreg = LogisticRegression(random_state=16, max_iter=5000, class_weight='balanced')
-gradboost = HistGradientBoostingClassifier(class_weight='balanced')
+gradboost = HistGradientBoostingClassifier(class_weight='balanced', random_state=42)
 # Xarxa neuronal petita
 # (10, 8) significa 10 neurones en la 1ª capa i 8 en la 2ª.
 mlp_clf = MLPClassifier(

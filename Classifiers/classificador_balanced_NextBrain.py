@@ -38,15 +38,7 @@ df4 = df4[df4['Unnamed: 0'] == 0]
 df4.drop(columns = ['Unnamed: 0'], inplace = True) # Ja no em fa falta
 
 # Ajuntarem els df del nextbrain en un de sol
-columnes = df2.columns.tolist()
-dfNextbrain = df2.copy()
-
-for col in columnes:
-    if col != 'subject':
-        dfNextbrain[col] = df2[col] + df3[col]
-
-# Comprovem que s'hagi sumat correctament
-#print(dfNextbrain['white_matter_of_forebrain'].head())
+dfNextbrain = pd.merge(df2, df3, on='subject', how='inner')
 
 # Unir dataframes
 df_total = pd.merge(df1, dfNextbrain, left_on='BID', right_on='subject')

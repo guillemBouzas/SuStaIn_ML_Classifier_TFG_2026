@@ -22,7 +22,7 @@ A continuació es descriu el contingut de cadascuna de les carpetes del reposito
 
 Per identificar la base de dades utilitzada en cada script, cal tenir en compte que únicament els fitxers que contenen el prefix `adni` al nom fan ús de la base de dades ADNI. La resta de scripts treballen amb dades provinents de la base de dades A4.
 
-## ACLARACIONS
+## ACLARIMENTS
 
 Per a la redacció i desenvolupament del codi d’aquest treball s’han utilitzat eines d’intel·ligència artificial generativa, com ara ChatGPT i Google Gemini, com a suport durant el procés de programació.
 

@@ -75,9 +75,11 @@ Es recomana instal·lar totes les dependències amb:
 
 ```bash
 pip install pandas numpy matplotlib seaborn scikit-learn scipy statsmodels
+```
 
 ```bash
 pip install git+https://github.com/ucl-pond/pySuStaIn
+```
 
 ## Aclariments
 

@@ -22,7 +22,7 @@ A continuació es descriu el contingut de cadascuna de les carpetes del reposito
 
 Per identificar la base de dades utilitzada en cada script, cal tenir en compte que únicament els fitxers que contenen el prefix `adni` al nom fan ús de la base de dades ADNI. La resta de scripts treballen amb dades provinents de la base de dades A4.
 
-## Dependencies
+## Dependències
 
 Aquest projecte ha estat desenvolupat en Python i requereix les següents llibreries:
 

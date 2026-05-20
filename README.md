@@ -20,6 +20,8 @@ A continuació es descriu el contingut de cadascuna de les carpetes del reposito
 
   A l’interior de la carpeta s’hi troben tres subcarpetes diferenciades segons la procedència de les dades o l’atles utilitzat: **A4**, **ADNI** i **NextBrain**.
 
+- **Demos** &rarr; Aquesta carpeta conté dues carpetes amb cadascuna una _Jupyter Notebook_ per si es vol fer una prova senzilla dels algorismes de detecció i de models de progressió de la malaltia.
+
 Per identificar la base de dades utilitzada en cada script, cal tenir en compte que únicament els fitxers que contenen el prefix `adni` al nom fan ús de la base de dades ADNI. La resta de scripts treballen amb dades provinents de la base de dades A4.
 
 ## Dependències

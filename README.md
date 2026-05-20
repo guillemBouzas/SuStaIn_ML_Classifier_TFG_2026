@@ -49,6 +49,7 @@ Aquest projecte ha estat desenvolupat en Python i requereix les següents llibre
   - HistGradientBoostingClassifier
   - LinearRegression
   - MLPClassifier
+  - StratifiedKFold
   - LabelEncoder
   - StandardScaler
   - confusion_matrix
@@ -57,6 +58,7 @@ Aquest projecte ha estat desenvolupat en Python i requereix les següents llibre
   - RocCurveDisplay
   - PrecisionRecallDisplay
   - model_selection
+  - utils
 
 ### Estadística
 - scipy
